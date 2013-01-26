@@ -6,4 +6,12 @@
 @import "install-button.css";
 
 /* Your styles here */
+body,html{
+  height:100%;
+}
 
+div#map{
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}

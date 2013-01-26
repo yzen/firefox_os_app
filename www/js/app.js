@@ -4,38 +4,51 @@
 
 define(function(require) {
     var $ = require('zepto');
+    var OpenLayers = require('OpenLayers');
     require('./install-button');
 
-/*     var video_status = false; */
-/*     var video = document.createElement("video"); */
-/*     video.setAttribute("width", 640); */
-/*     video.setAttribute("height", 480); */
+    var map = new OpenLayers.Map("map");
+    map.addLayer(new OpenLayers.Layer.OSM());
+    map.zoomToMaxExtent();
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var location = new OpenLayers.LonLat(position.coords.longitude, position.coords.latitude);
+      console.log(JSON.stringify(location));
+      
+      var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+      var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+      position = location.transform(fromProjection, toProjection);
+      var markers = new OpenLayers.Layer.Markers("Markers");
+      map.addLayer(markers);
+
+      var size = new OpenLayers.Size(21,25);
+      var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+      var icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png', size, offset);
+
+      markers.addMarker(new OpenLayers.Marker(position, icon));
+      map.setCenter(position, 18);
+    });
+    /*
+var connection = new mozRTCPeerConnection();
+    
+
     var video = $("video")[0];
-
-/*     var audio_status = false; */
-/*     var audio = document.createElement("audio"); */
-/*     audio.setAttribute("controls", true); */
-
+    var otherVideo = $("video")[1];
     window.navigator.mozGetUserMedia({
       video:true,
       audio:true
     }, function(stream) {
+      connection.addStream(stream);
       video.mozSrcObject = stream;
       video.play();
-      /*
-if (video_status) {
-        content.appendChild(video);
-        
-        frames.innerHTML = '';
-        stopbuttons.appendChild(snapshot);
-      } else if (audio_status) {
-        content.appendChild(audio);
-        audio.mozSrcObject = stream;
-        audio.play();
-      }
-*/
     }, function(err) {
       alert(err);
     });
+*/
+
+
+  
+
+
 });
 
